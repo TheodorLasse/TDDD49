@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:ChatApp"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button Content="Start" HorizontalAlignment="Center" Margin="0,217,0,0" VerticalAlignment="Top" Command="{Binding Path=StartGame}" Height="52" Width="180"/>
+    <Grid Background="Red">
+        <Frame x:Name="mainFrame"/>
     </Grid>
 
 </Window>

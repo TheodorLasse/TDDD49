@@ -5,7 +5,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using ChatApp.Model;
 using ChatApp.View;
 using ChatApp.ViewModel.Command;
@@ -76,13 +78,13 @@ namespace ChatApp.ViewModel
             NetworkManager.sendMessage(MyText);
         }
 
-        public void showGameBoard()
+        public void showLoginPage()
         {
             if (NetworkManager.startConnection())
             {
-                LoginView gameBoard = new LoginView();
-                gameBoard.DataContext = this;
-                gameBoard.ShowDialog();
+                LoginPageView loginPage = new LoginPageView();
+                loginPage.DataContext = this;
+                
             }
    
         }

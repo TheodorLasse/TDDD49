@@ -23,6 +23,7 @@ namespace ChatApp.View
         public LoginPageView()
         {
             InitializeComponent();
+            MainWindow.MainFrame.NavigationService.Navigate(new ChatPageView());
         }
     }
 }
