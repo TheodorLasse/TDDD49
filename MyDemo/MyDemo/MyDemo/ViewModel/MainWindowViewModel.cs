@@ -6,11 +6,11 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using MyDemo.Model;
-using MyDemo.View;
-using MyDemo.ViewModel.Command;
+using ChatApp.Model;
+using ChatApp.View;
+using ChatApp.ViewModel.Command;
 
-namespace MyDemo.ViewModel
+namespace ChatApp.ViewModel
 {
     internal class MainWindowViewModel
     {
@@ -57,7 +57,7 @@ namespace MyDemo.ViewModel
 
         public void startGameBoard()
         {
-            GameBoard board = new GameBoard();
+            LoginView board = new LoginView();
             board.DataContext = this;
             board.ShowDialog();
             startConnection();
@@ -88,7 +88,7 @@ namespace MyDemo.ViewModel
         {
             if (NetworkManager.startConnection())
             {
-                GameBoard gameBoard = new GameBoard();
+                LoginView gameBoard = new LoginView();
                 gameBoard.DataContext = this;
                 gameBoard.ShowDialog();
             }

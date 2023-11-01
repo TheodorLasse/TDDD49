@@ -13,11 +13,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\admin\\Source\\Repos\\TDDD49\\MyDemo\\MyDemo\\MyDemo\\MyDemo.csproj",
-      "projectName": "MyDemo",
-      "projectPath": "C:\\Users\\admin\\Source\\Repos\\TDDD49\\MyDemo\\MyDemo\\MyDemo\\MyDemo.csproj",
+      "projectUniqueName": "C:\\Users\\admin\\source\\repos\\TDDD49\\MyDemo\\MyDemo\\MyDemo\\ChatApp.csproj",
+      "projectName": "ChatApp",
+      "projectPath": "C:\\Users\\admin\\source\\repos\\TDDD49\\MyDemo\\MyDemo\\MyDemo\\ChatApp.csproj",
       "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\admin\\Source\\Repos\\TDDD49\\MyDemo\\MyDemo\\MyDemo\\obj\\",
+      "outputPath": "C:\\Users\\admin\\source\\repos\\TDDD49\\MyDemo\\MyDemo\\MyDemo\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",

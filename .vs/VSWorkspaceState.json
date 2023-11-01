@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\MyDemo",
+    "\\MyDemo\\MyDemo",
+    "\\MyDemo\\MyDemo\\MyDemo",
+    "\\MyDemo\\MyDemo\\MyDemo\\ViewModel"
   ],
-  "SelectedNode": "\\C:\\Users\\admin\\Source\\Repos\\TDDD49",
+  "SelectedNode": "\\MyDemo\\MyDemo\\MyDemo\\ViewModel\\MainWindowViewModel.cs",
   "PreviewInSolutionExplorer": false
 }
