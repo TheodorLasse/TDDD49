@@ -13,7 +13,11 @@ namespace ChatApp.View
             InitializeComponent();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void Login_button_click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.MainFrame.NavigationService.Navigate(new ChatPageView());
+        }
+        private void Listen_button_click(object sender, RoutedEventArgs e)
         {
             MainWindow.MainFrame.NavigationService.Navigate(new ChatPageView());
         }

@@ -9,6 +9,17 @@
       Title="LoginPageView">
 
     <Grid Background="AliceBlue">
-        <Button Click="Button_Click" Width="50" Height="30" Name="Tjo"></Button>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="ip" Width="100" Height="40" Grid.Row="0"/>
+        <Button Click="Listen_button_click" Width="50" Height="30" Name="Listen" Grid.Row="1">
+            <TextBlock>Listen</TextBlock>
+        </Button>
+        <Button Click="Login_button_click" Width="50" Height="30" Name="Login" Grid.Row="2">
+            <TextBlock>Login</TextBlock>
+        </Button>
     </Grid>
 </Page>
