@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using ChatApp.Model;
 using ChatApp.View;
 
 namespace ChatApp
@@ -13,8 +14,8 @@ namespace ChatApp
         public MainWindow()
         {
             InitializeComponent();
-            MainFrame = this.mainFrame;
-            MainFrame.NavigationService.Navigate(new LoginPageView());
+            MainFrame = mainFrame;
+            MainFrame.NavigationService.Navigate(new LoginPageView(new ViewModel.LoginPageViewModel(new NetworkManager())));
         }
     }
 }

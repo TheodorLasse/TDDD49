@@ -2,11 +2,12 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace ChatApp.Model
 {
 
-    internal class NetworkManager
+    public class NetworkManager
     {
         class NoConnectionException : Exception { }
 
@@ -16,7 +17,7 @@ namespace ChatApp.Model
 
         public bool IsConnected => tcpClient != null && tcpClient.Connected;
 
-        public void StartListening(string ip, int port)
+        public Task<bool> StartListening(string ip, int port)
         {
             if (IsConnected)
             {
@@ -27,31 +28,46 @@ namespace ChatApp.Model
 
             // Start listening
             IPAddress ipAddress = IPAddress.Parse(ip);
-            TcpListener listener = new (ipAddress, port);
+            TcpListener listener = new(ipAddress, port);
+
             listener.Start();
 
             // Wait for connection
-            tcpClient = listener.AcceptTcpClient();
-            Console.WriteLine("Connected!");
+            return Task.Run(() => {
+                try
+                {
+                    tcpClient = listener.AcceptTcpClient();
+                    return true;
+                }
+                catch (SocketException)
+                {
+                    return false;
+                }
+            });
         }
 
-        public bool Connect(string ip, int port)
+        public Task<bool> Connect(string ip, int port)
         {
             if (IsConnected)
             {
                 throw new AlreadyConnectedException();
             }
 
-            // Connect to server
-            try
+
+            return Task.Run(() =>
             {
-                tcpClient = new TcpClient(ip, port);
-                return true;
-            }
-            catch (SocketException)
-            {
-                return false;
-            }
+                // Connect to server
+                try
+                {
+                    tcpClient = new TcpClient(ip, port);
+                    return true;
+                }
+                catch (SocketException)
+                {
+                    tcpClient = null;
+                    return false;
+                }
+            });
         }
 
         public string ReadMessage()

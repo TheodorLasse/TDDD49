@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ChatApp.ViewModel;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ChatApp.View
@@ -8,8 +9,12 @@ namespace ChatApp.View
     /// </summary>
     public partial class LoginPageView : Page
     {
-        public LoginPageView()
+        private LoginPageViewModel viewModel;
+
+        public LoginPageView(LoginPageViewModel viewModel)
         {
+            this.viewModel = viewModel;
+            DataContext = viewModel;
             InitializeComponent();
         }
 
@@ -19,7 +24,7 @@ namespace ChatApp.View
         }
         private void Listen_button_click(object sender, RoutedEventArgs e)
         {
-            MainWindow.MainFrame.NavigationService.Navigate(new ChatPageView());
+            viewModel.StartListening(ip.Text, int.Parse(port.Text));
         }
     }
 }
