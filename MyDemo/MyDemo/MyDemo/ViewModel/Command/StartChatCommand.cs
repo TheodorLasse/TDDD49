@@ -8,12 +8,12 @@ using ChatApp.ViewModel;
 
 namespace ChatApp.ViewModel.Command
 {
-    internal class StartGameCommand : ICommand
+    internal class StartChatCommand : ICommand
     {
         private MainWindowViewModel parent = null;
 
 
-        public StartGameCommand(MainWindowViewModel parent)
+        public StartChatCommand(MainWindowViewModel parent)
         {
             this.parent = parent;
 

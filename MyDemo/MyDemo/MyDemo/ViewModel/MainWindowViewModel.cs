@@ -16,7 +16,7 @@ namespace ChatApp.ViewModel
     {
 
         private NetworkManager NetworkManager { get; set; }
-        private ICommand startGame;
+        private ICommand startChat;
         private string text;
         
         public MainWindowViewModel(NetworkManager networkManager)
@@ -36,31 +36,23 @@ namespace ChatApp.ViewModel
         }
 
 
-        public ICommand StartGame
+        public ICommand StartChat
         {
             get
             {
-                if (startGame == null)
-                    startGame = new StartGameCommand(this);
-                return startGame;
+                if (startChat == null)
+                    startChat = new StartChatCommand(this);
+                return startChat;
             }
             set
             {
-                startGame = value;
+                startChat = value;
             }
         }
 
         private void startConnection()
         {
             NetworkManager.startConnection();
-        }
-
-        public void startGameBoard()
-        {
-            LoginView board = new LoginView();
-            board.DataContext = this;
-            board.ShowDialog();
-            startConnection();
         }
 
         private ICommand enterCommand;
