@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -75,6 +77,22 @@ namespace ChatApp.Model
         public void SendMessage(string message)
         {
             networkManager.SendMessage(message);
+
+        }
+
+        public void ReadMessages(ObservableCollection<string> messages)
+        {
+            while (networkManager.IsConnected)
+            {
+                string readMessage = networkManager.ReadMessage();
+                if (readMessage != string.Empty)
+                {
+                    App.Current.Dispatcher.Invoke((Action)delegate
+                    {
+                        messages.Add(readMessage);
+                    });
+                }
+            }
         }
     }
 }

@@ -40,6 +40,7 @@ namespace ChatApp.ViewModel
             this.protocolManager = protocolManager;
             Messages = new ObservableCollection<string>();
             EnterCommand = new EnterCommand(enterKeyPressed);
+            Task.Run(()=>protocolManager.ReadMessages(Messages));
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -50,6 +51,7 @@ namespace ChatApp.ViewModel
         private void enterKeyPressed()
         {
             protocolManager.SendMessage(TextInput);
+            Messages.Add(TextInput);
             TextInput = "";
         }
     }

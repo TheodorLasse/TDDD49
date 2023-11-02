@@ -83,9 +83,17 @@ namespace ChatApp.Model
 
             // Read data to buffer
             byte[] buffer = new byte[tcpClient.ReceiveBufferSize];
-            int bytesRead = networkStream.Read(buffer, 0, tcpClient.ReceiveBufferSize);
-
-            if (bytesRead == 0) { MessageBox.Show("Connection lost"); }
+            int bytesRead;
+            try
+            {
+                bytesRead = networkStream.Read(buffer, 0, tcpClient.ReceiveBufferSize);
+            }
+            catch
+            {
+                //MessageBox.Show("Connection lost");
+                CloseConnection();
+                return "Connection lost";
+            }
 
             // Convert to string
             string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);
