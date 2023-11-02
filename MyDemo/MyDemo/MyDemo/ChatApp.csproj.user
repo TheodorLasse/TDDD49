@@ -10,7 +10,7 @@
     <Compile Update="View\ChatPageView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="View\LoginPageView.xaml.cs">
+    <Compile Update="View\ConnectPageView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -21,7 +21,7 @@
     <Page Update="View\ChatPageView.xaml">
       <SubType>Designer</SubType>
     </Page>
-    <Page Update="View\LoginPageView.xaml">
+    <Page Update="View\ConnectPageView.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

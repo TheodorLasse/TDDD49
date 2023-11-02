@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using ChatApp.ViewModel;
+using System.Windows.Controls;
 
 namespace ChatApp.View
 {
@@ -7,9 +8,13 @@ namespace ChatApp.View
     /// </summary>
     public partial class ChatPageView : Page
     {
-        public ChatPageView()
+        ChatPageViewModel viewModel;
+        public ChatPageView(ChatPageViewModel viewModel)
         {
+            this.viewModel = viewModel;
+            DataContext = this.viewModel;
             InitializeComponent();
+            itemsControl.ItemsSource = viewModel.Messages;
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ChatApp.Model
 {
@@ -17,7 +18,7 @@ namespace ChatApp.Model
 
         public bool IsConnected => tcpClient != null && tcpClient.Connected;
 
-        public Task<bool> StartListening(string ip, int port)
+        public async Task<bool> StartServer(string ip, int port)
         {
             if (IsConnected)
             {
@@ -33,7 +34,7 @@ namespace ChatApp.Model
             listener.Start();
 
             // Wait for connection
-            return Task.Run(() => {
+            return await Task.Run(() => {
                 try
                 {
                     tcpClient = listener.AcceptTcpClient();
@@ -46,7 +47,7 @@ namespace ChatApp.Model
             });
         }
 
-        public Task<bool> Connect(string ip, int port)
+        public async Task<bool> ConnectServer(string ip, int port)
         {
             if (IsConnected)
             {
@@ -54,7 +55,7 @@ namespace ChatApp.Model
             }
 
 
-            return Task.Run(() =>
+            return await Task.Run(() =>
             {
                 // Connect to server
                 try
@@ -83,6 +84,8 @@ namespace ChatApp.Model
             // Read data to buffer
             byte[] buffer = new byte[tcpClient.ReceiveBufferSize];
             int bytesRead = networkStream.Read(buffer, 0, tcpClient.ReceiveBufferSize);
+
+            if (bytesRead == 0) { MessageBox.Show("Connection lost"); }
 
             // Convert to string
             string dataReceived = Encoding.UTF8.GetString(buffer, 0, bytesRead);

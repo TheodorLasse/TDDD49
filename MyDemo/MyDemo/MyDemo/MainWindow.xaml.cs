@@ -15,7 +15,7 @@ namespace ChatApp
         {
             InitializeComponent();
             MainFrame = mainFrame;
-            MainFrame.NavigationService.Navigate(new LoginPageView(new ViewModel.LoginPageViewModel(new NetworkManager())));
+            MainFrame.NavigationService.Navigate(new ConnectPageView(new ViewModel.ConnectPageViewModel(new ProtocolManager())));
         }
     }
 }
