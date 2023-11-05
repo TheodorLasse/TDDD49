@@ -1,9 +1,11 @@
 ﻿using ChatApp.Model;
 using ChatApp.View;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using System.Xml.Linq;
+using System.Windows.Data;
 
 namespace ChatApp.ViewModel
 {
@@ -12,6 +14,31 @@ namespace ChatApp.ViewModel
         private ProtocolManager protocolManager;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        private ChatHistory chatHistory;
+
+        public ObservableCollection<string> ChatHistoryStrings { get; set; } = new();
+
+        private void UpdateHistoryList()
+        {
+            ChatHistoryStrings = new ObservableCollection<string>(
+                chatHistory.HistoryStrings.Where(x => x.Contains(SearchText))
+            );
+            OnPropertyChanged(nameof(ChatHistoryStrings));
+        }
+
+        private string searchText = "";
+
+        public string SearchText
+        {
+            get { return searchText; }
+            set
+            {
+                searchText = value;
+                UpdateHistoryList();
+                OnPropertyChanged();
+            }
+        }
 
         private string errorMessage = "";
 
@@ -30,11 +57,12 @@ namespace ChatApp.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        public ConnectPageViewModel(ProtocolManager protocolManager)
+        public ConnectPageViewModel(ProtocolManager protocolManager, ChatHistory chatHistory)
         {
             this.protocolManager = protocolManager;
+            this.chatHistory = chatHistory;
+            UpdateHistoryList();
         }
-
 
         public async void ConnectServer(string ip, int port, string username)
         {
@@ -42,11 +70,16 @@ namespace ChatApp.ViewModel
             try
             {
                 protocolManager.username = username;
-                if (await protocolManager.ConnectServer(ip, port))
+                string? otherUser = await protocolManager.ConnectServer(ip, port);
+                if (otherUser != null)
                 {
                     ErrorMessage = "Connected to server!";
+
+                    ChatSession newChatSession = chatHistory.StartNewSession(otherUser);
+
                     MainWindow.MainFrame.NavigationService.Navigate(
-                        new ChatPageView(new ChatPageViewModel(protocolManager)));
+                        new ChatPageView(new ChatPageViewModel(protocolManager, newChatSession))
+                    );
                 }
                 else
                 {
@@ -65,11 +98,16 @@ namespace ChatApp.ViewModel
             try
             {
                 protocolManager.username = username;
-                if (await protocolManager.StartServer(ip, port))
+                string? otherUser = await protocolManager.StartServer(ip, port);
+                if (otherUser != null)
                 {
                     ErrorMessage = "Connected as server!";
+
+                    ChatSession newChatSession = chatHistory.StartNewSession(otherUser);
+
                     MainWindow.MainFrame.NavigationService.Navigate(
-                        new ChatPageView(new ChatPageViewModel(protocolManager)));
+                        new ChatPageView(new ChatPageViewModel(protocolManager, newChatSession))
+                    );
                 }
                 else
                 {
@@ -80,6 +118,14 @@ namespace ChatApp.ViewModel
             {
                 ErrorMessage = "Failed to start server!";
             }
+        }
+
+        internal void ShowHistory(string chatId)
+        {
+            int index = chatHistory.HistoryStrings.IndexOf(chatId);
+            MainWindow.MainFrame.NavigationService.Navigate(
+                new ChatHistoryPageView(new ChatHistoryPageViewModel(chatHistory.History[index]))
+            );
         }
     }
 }

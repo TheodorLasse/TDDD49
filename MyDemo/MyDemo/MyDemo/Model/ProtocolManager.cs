@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,85 +15,165 @@ namespace ChatApp.Model
     {
         private NetworkManager networkManager;
         public string username;
-        public ProtocolManager() {
+        private string otherUser;
+
+        public ProtocolManager()
+        {
             networkManager = new NetworkManager();
         }
 
-
-        public async Task<bool> ConnectServer(string ip, int port)
+        public async Task<string?> ConnectServer(string ip, int port)
         {
             if (username == string.Empty)
             {
-                return false;
+                return null;
             }
 
             bool result = await networkManager.ConnectServer(ip, port);
-            if (!result) { return false; }
-
-            networkManager.SendMessage(username);
-            string response = networkManager.ReadMessage();
-
-            if (response == "accept")
+            if (!result)
             {
-                return true;
+                return null;
+            }
+
+            string payload = JsonSerializer.Serialize(
+                new ProtocolMessage(ProtocolType.Connect, username)
+            );
+
+            networkManager.SendMessage(payload);
+
+            ProtocolMessage? response = JsonSerializer.Deserialize<ProtocolMessage>(
+                networkManager.ReadMessage()
+            );
+
+            if (response == null)
+            {
+                return null;
+            }
+
+            if (response.RequestType == ProtocolType.Accept)
+            {
+                otherUser = response.Message;
+                return otherUser;
             }
             else
             {
                 MessageBox.Show("User did not accept your connection.");
                 networkManager.CloseConnection();
-                return false;
+                return null;
             }
         }
 
-        public async Task<bool> StartServer(string ip, int port)
+        public async Task<string?> StartServer(string ip, int port)
         {
             if (username == string.Empty)
             {
-                return false;
+                return null;
             }
             bool result = await networkManager.StartServer(ip, port);
-            if (!result) { return false; }
-
-            string connectingUser = networkManager.ReadMessage();
-
-            bool acceptConnection = MessageBox.Show($"{connectingUser} is trying to connect to you, do you accept?", "Connection!", MessageBoxButton.YesNo) == MessageBoxResult.Yes;
-
-            string response = "denied";
-
-            if(acceptConnection) { response = "accept"; }
-
-            networkManager.SendMessage(response);
-
-            if(response == "accept")
+            if (!result)
             {
-                return true;
+                return null;
+            }
+
+            ProtocolMessage? connectingUser = JsonSerializer.Deserialize<ProtocolMessage>(
+                networkManager.ReadMessage()
+            );
+
+            if (connectingUser == null)
+                return null;
+
+            bool acceptConnection =
+                MessageBox.Show(
+                    $"{connectingUser.Message} is trying to connect to you, do you accept?",
+                    "Connection!",
+                    MessageBoxButton.YesNo
+                ) == MessageBoxResult.Yes;
+
+            ProtocolType response = ProtocolType.Deny;
+
+            if (acceptConnection)
+            {
+                response = ProtocolType.Accept;
+            }
+
+            networkManager.SendMessage(
+                JsonSerializer.Serialize(new ProtocolMessage(response, username))
+            );
+
+            if (response == ProtocolType.Accept)
+            {
+                otherUser = connectingUser.Message;
+                return connectingUser.Message;
             }
             else
             {
                 networkManager.CloseConnection();
-                return false;
+                return null;
             }
         }
 
         public void SendMessage(string message)
         {
-            networkManager.SendMessage(message);
-
+            if (networkManager.IsConnected)
+            {
+                networkManager.SendMessage(
+                    JsonSerializer.Serialize(new ProtocolMessage(ProtocolType.Message, message))
+                );
+            }
         }
 
-        public void ReadMessages(ObservableCollection<string> messages)
+        public void SendShake()
+        {
+            if (networkManager.IsConnected)
+            {
+                networkManager.SendMessage(
+                    JsonSerializer.Serialize(new ProtocolMessage(ProtocolType.Shake, ""))
+                );
+            }
+        }
+
+        public void ReadMessages(ChatSession chatSession)
         {
             while (networkManager.IsConnected)
             {
                 string readMessage = networkManager.ReadMessage();
-                if (readMessage != string.Empty)
+                if (readMessage == string.Empty)
                 {
-                    App.Current.Dispatcher.Invoke((Action)delegate
-                    {
-                        messages.Add(readMessage);
-                    });
+                    Application.Current.Dispatcher.Invoke(
+                        delegate
+                        {
+                            chatSession.ConnectionLost();
+                        }
+                    );
+                    networkManager.CloseConnection();
+                    return;
+                }
+
+                ProtocolMessage? message = JsonSerializer.Deserialize<ProtocolMessage>(readMessage);
+                if (message != null && message.RequestType == ProtocolType.Message)
+                {
+                    Application.Current.Dispatcher.Invoke(
+                        delegate
+                        {
+                            chatSession.Add(message.Message, otherUser);
+                        }
+                    );
+                }
+                else if (message != null && message.RequestType == ProtocolType.Shake)
+                {
+                    Application.Current.Dispatcher.Invoke(
+                        delegate
+                        {
+                            MainWindow.Shake();
+                        }
+                    );
                 }
             }
+        }
+
+        public void CloseConnection()
+        {
+            networkManager.CloseConnection();
         }
     }
 }

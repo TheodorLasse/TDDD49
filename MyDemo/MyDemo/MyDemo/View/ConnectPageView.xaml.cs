@@ -1,4 +1,6 @@
-﻿using ChatApp.ViewModel;
+﻿using ChatApp.Model;
+using ChatApp.ViewModel;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -25,6 +27,10 @@ namespace ChatApp.View
         private void StartServer_button_click(object sender, RoutedEventArgs e)
         {
             viewModel.StartServer(ip.Text, int.Parse(port.Text), username.Text);
+        }
+        private void History_button_click(object sender, RoutedEventArgs e)
+        {
+            viewModel.ShowHistory((string)((Button)sender).DataContext);
         }
     }
 }

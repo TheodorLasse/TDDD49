@@ -7,7 +7,6 @@ using System.Windows;
 
 namespace ChatApp.Model
 {
-
     public class NetworkManager
     {
         class NoConnectionException : Exception { }
@@ -34,7 +33,8 @@ namespace ChatApp.Model
             listener.Start();
 
             // Wait for connection
-            return await Task.Run(() => {
+            return await Task.Run(() =>
+            {
                 try
                 {
                     tcpClient = listener.AcceptTcpClient();
@@ -53,7 +53,6 @@ namespace ChatApp.Model
             {
                 throw new AlreadyConnectedException();
             }
-
 
             return await Task.Run(() =>
             {
@@ -90,9 +89,8 @@ namespace ChatApp.Model
             }
             catch
             {
-                //MessageBox.Show("Connection lost");
                 CloseConnection();
-                return "Connection lost";
+                return string.Empty;
             }
 
             // Convert to string
@@ -102,7 +100,6 @@ namespace ChatApp.Model
 
             return dataReceived;
         }
-
 
         public void SendMessage(string str)
         {
@@ -120,7 +117,7 @@ namespace ChatApp.Model
             // Send data
             networkStream.Write(buffer, 0, buffer.Length);
 
-            Console.WriteLine("Sent : " + str); 
+            Console.WriteLine("Sent : " + str);
         }
 
         public void CloseConnection()

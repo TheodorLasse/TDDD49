@@ -1,4 +1,5 @@
 ﻿using ChatApp.Model;
+using ChatApp.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -7,6 +8,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ChatApp.ViewModel
@@ -14,8 +16,13 @@ namespace ChatApp.ViewModel
     public partial class ChatPageViewModel : INotifyPropertyChanged
     {
         ProtocolManager protocolManager;
-        
-        public ObservableCollection<string> Messages;
+
+        public ObservableCollection<string> Messages
+        {
+            get { return ChatSession.ChatText; }
+        }
+
+        public ChatSession ChatSession { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -31,16 +38,14 @@ namespace ChatApp.ViewModel
             }
         }
 
-        public EnterCommand EnterCommand
-        {
-            get; set;
-        }
+        public EnterCommand EnterCommand { get; set; }
 
-        public ChatPageViewModel(ProtocolManager protocolManager) {
+        public ChatPageViewModel(ProtocolManager protocolManager, ChatSession chatSession)
+        {
             this.protocolManager = protocolManager;
-            Messages = new ObservableCollection<string>();
             EnterCommand = new EnterCommand(enterKeyPressed);
-            Task.Run(()=>protocolManager.ReadMessages(Messages));
+            this.ChatSession = chatSession;
+            Task.Run(() => protocolManager.ReadMessages(ChatSession));
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -50,31 +55,22 @@ namespace ChatApp.ViewModel
 
         private void enterKeyPressed()
         {
+            if (TextInput == string.Empty)
+                return;
             protocolManager.SendMessage(TextInput);
-            Messages.Add(TextInput);
+            ChatSession.Add(TextInput, protocolManager.username);
             TextInput = "";
         }
-    }
 
-    public class EnterCommand : ICommand
-    {
-        Action enterKeyPressed;
-        public EnterCommand(Action sendMessage)
+        public void GoBack()
         {
-            this.enterKeyPressed = sendMessage;
+            MainWindow.MainFrame.NavigationService.GoBack();
+            protocolManager.CloseConnection();
         }
 
-        public event EventHandler? CanExecuteChanged;
-
-        bool ICommand.CanExecute(object? parameter)
+        public void Shake()
         {
-            return true;
-        }
-
-        void ICommand.Execute(object? parameter)
-        {
-            enterKeyPressed();
+            protocolManager.SendShake();
         }
     }
-
 }

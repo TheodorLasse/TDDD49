@@ -17,6 +17,10 @@
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
         <TextBlock Text="{Binding ErrorMessage}" Grid.Row="0"/>
         <TextBox x:Name="username" Width="100" Height="40" Grid.Row="1" Text="Enter username"/>
         <TextBox x:Name="ip" Width="100" Height="40" Grid.Row="2" Text="127.0.0.1"/>
@@ -27,5 +31,27 @@
         <Button Click="ConnectServer_button_click" Width="100" Height="30" Name="Connect" Grid.Row="5">
             <TextBlock>Connect to server</TextBlock>
         </Button>
+        <ScrollViewer Grid.Column="1" Grid.RowSpan="5">
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding ChatHistoryStrings}" x:Name="itemsControl" Background="White" Width="300" Margin="5">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Vertical"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Click="History_button_click">
+                                <TextBlock Foreground="Black" Text="{Binding}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+        <TextBox Grid.Column="1" Grid.Row="5" x:Name="Search" Width="300" Height="40" Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            
+        </TextBox>
+
     </Grid>
 </Page>

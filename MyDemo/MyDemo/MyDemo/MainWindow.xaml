@@ -4,10 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChatApp"
+        xmlns:viewModel="clr-namespace:ChatApp.ViewModel"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid Background="Red">
         <Frame NavigationUIVisibility="Hidden" x:Name="mainFrame"/>
     </Grid>
 
+    <Window.Resources>
+        <Storyboard x:Key="shakeKey" TargetProperty="Left">
+            <DoubleAnimation  From="400" To="600" Duration="0:0:0.5"
+                     AutoReverse="True" RepeatBehavior="10x"
+                     FillBehavior="Stop"/>
+        </Storyboard>
+    </Window.Resources>
 </Window>
