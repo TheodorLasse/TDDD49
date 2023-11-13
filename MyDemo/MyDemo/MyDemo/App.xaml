@@ -9,21 +9,32 @@
             <Setter Property="FontFamily" Value="Segoe UI" />
         </Style>
 
-        <Style TargetType="TextBox" BasedOn="{StaticResource baseStyle}">
-            <Setter Property="BorderBrush" Value="Black"/>
+        <Style TargetType="{x:Type Control}" x:Key="shadowStyle" BasedOn="{StaticResource baseStyle}">
+            <Setter Property="BitmapEffect">
+                <Setter.Value>
+                    <DropShadowBitmapEffect Color="Black" Direction="320" Softness="0" ShadowDepth="5" Opacity="1" />
+                </Setter.Value>
+            </Setter>
         </Style>
 
-        <Style TargetType="Button" BasedOn="{StaticResource baseStyle}">
+        <Style TargetType="TextBox" BasedOn="{StaticResource shadowStyle}">
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+
+        <Style TargetType="Button" BasedOn="{StaticResource shadowStyle}">
+            <Setter Property="BorderBrush" Value="Black"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="5"/>
         </Style>
 
         <Style TargetType="Border">
             <Setter Property="BorderBrush" Value="Black"/>
-            <Setter Property="CornerRadius" Value="3"/>
-            <Setter Property="Effect">
-                <Setter.Value>
-                    <DropShadowEffect Color="Black" Opacity="1" ShadowDepth="4" BlurRadius="0"/>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="CornerRadius" Value="4"/>
         </Style>
     </Application.Resources>
 </Application>
