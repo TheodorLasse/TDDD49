@@ -1,21 +1,17 @@
 ﻿using ChatApp.Model;
 using ChatApp.ViewModel.Commands;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace ChatApp.ViewModel
 {
     public partial class ChatPageViewModel : INotifyPropertyChanged
     {
-        ProtocolManager protocolManager;
+        readonly ProtocolManager protocolManager;
 
         public ObservableCollection<string> Messages
         {
@@ -44,8 +40,10 @@ namespace ChatApp.ViewModel
         {
             this.protocolManager = protocolManager;
             EnterCommand = new EnterCommand(enterKeyPressed);
-            this.ChatSession = chatSession;
+            ChatSession = chatSession;
             Task.Run(() => protocolManager.ReadMessages(ChatSession));
+
+            protocolManager.ShakeEvent += ShakeScreen;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -68,9 +66,15 @@ namespace ChatApp.ViewModel
             protocolManager.CloseConnection();
         }
 
-        public void Shake()
+        public void SendShake()
         {
             protocolManager.SendShake();
+        }
+
+        public static void ShakeScreen()
+        {
+            var storyboard = (Storyboard)Application.Current.MainWindow.FindResource("shakeKey");
+            storyboard.Begin(Application.Current.MainWindow);
         }
     }
 }

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Text.Json;
-using System.Text.RegularExpressions;
+﻿using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -13,9 +6,12 @@ namespace ChatApp.Model
 {
     public class ProtocolManager
     {
-        private NetworkManager networkManager;
+        private readonly NetworkManager networkManager;
         public string username;
         private string otherUser;
+        
+        public delegate void ShakeEventHandler();
+        public event ShakeEventHandler ShakeEvent;
 
         public ProtocolManager()
         {
@@ -164,7 +160,7 @@ namespace ChatApp.Model
                     Application.Current.Dispatcher.Invoke(
                         delegate
                         {
-                            MainWindow.Shake();
+                            ShakeEvent?.Invoke();
                         }
                     );
                 }
