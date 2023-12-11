@@ -62,6 +62,15 @@ namespace ChatApp.ViewModel
             this.protocolManager = protocolManager;
             this.chatHistory = chatHistory;
             UpdateHistoryList();
+
+            // Update history list on back navigation
+            MainWindow.MainFrame.NavigationService.Navigated += (sender, e) =>
+            {
+                if (e.Content is ConnectPageView)
+                {
+                    UpdateHistoryList();
+        }
+            };  
         }
 
         public async void ConnectServer(string ip, int port, string username)

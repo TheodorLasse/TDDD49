@@ -13,7 +13,7 @@
 
     <Window.Resources>
         <Storyboard x:Key="shakeKey" TargetProperty="Left">
-            <DoubleAnimation  From="400" To="600" Duration="0:0:0.5"
+            <DoubleAnimation  From="400" To="600" Duration="0:0:0.1"
                      AutoReverse="True" RepeatBehavior="10x"
                      FillBehavior="Stop"/>
         </Storyboard>
