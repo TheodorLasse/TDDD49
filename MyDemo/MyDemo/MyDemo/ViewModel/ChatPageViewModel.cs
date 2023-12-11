@@ -39,7 +39,7 @@ namespace ChatApp.ViewModel
         public ChatPageViewModel(ProtocolManager protocolManager, ChatSession chatSession)
         {
             this.protocolManager = protocolManager;
-            EnterCommand = new EnterCommand(enterKeyPressed);
+            EnterCommand = new EnterCommand(EnterKeyPressed);
             ChatSession = chatSession;
             Task.Run(() => protocolManager.ReadMessages(ChatSession));
 
@@ -51,7 +51,7 @@ namespace ChatApp.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private void enterKeyPressed()
+        private void EnterKeyPressed()
         {
             if (TextInput == string.Empty)
                 return;
@@ -73,8 +73,9 @@ namespace ChatApp.ViewModel
 
         public static void ShakeScreen()
         {
-            var storyboard = (Storyboard)Application.Current.MainWindow.FindResource("shakeKey");
-            storyboard.Begin(Application.Current.MainWindow);
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            var storyboard = (Storyboard)mainWindow.FindResource("shakeKey");
+            storyboard.Begin(mainWindow);
         }
     }
 }

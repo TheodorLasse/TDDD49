@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -12,6 +13,9 @@ namespace ChatApp.Model
         
         public delegate void ShakeEventHandler();
         public event ShakeEventHandler ShakeEvent;
+
+        public delegate void MessageEventHandler(string message);
+        public event MessageEventHandler MessageEvent;
 
         public ProtocolManager()
         {
@@ -53,13 +57,13 @@ namespace ChatApp.Model
             }
             else
             {
-                MessageBox.Show("User did not accept your connection.");
+                MessageEvent?.Invoke("User did not accept your connection.");
                 networkManager.CloseConnection();
                 return null;
             }
         }
 
-        public async Task<string?> StartServer(string ip, int port)
+        public async Task<string?> StartServer(string ip, int port, Func<string, bool> connectionRequest)
         {
             if (username == string.Empty)
             {
@@ -78,13 +82,8 @@ namespace ChatApp.Model
             if (connectingUser == null)
                 return null;
 
-            bool acceptConnection =
-                MessageBox.Show(
-                    $"{connectingUser.Message} is trying to connect to you, do you accept?",
-                    "Connection!",
-                    MessageBoxButton.YesNo
-                ) == MessageBoxResult.Yes;
-
+            bool acceptConnection = connectionRequest(connectingUser.Message);
+                
             ProtocolType response = ProtocolType.Deny;
 
             if (acceptConnection)
@@ -108,23 +107,19 @@ namespace ChatApp.Model
             }
         }
 
-        public void SendMessage(string message)
+        public async void SendMessage(string message)
         {
             if (networkManager.IsConnected)
             {
-                networkManager.SendMessage(
-                    JsonSerializer.Serialize(new ProtocolMessage(ProtocolType.Message, message))
-                );
+                await Task.Run(() => networkManager.SendMessage(JsonSerializer.Serialize(new ProtocolMessage(ProtocolType.Message, message))));
             }
         }
 
-        public void SendShake()
+        public async void SendShake()
         {
             if (networkManager.IsConnected)
             {
-                networkManager.SendMessage(
-                    JsonSerializer.Serialize(new ProtocolMessage(ProtocolType.Shake, ""))
-                );
+                await Task.Run(() => networkManager.SendMessage(JsonSerializer.Serialize(new ProtocolMessage(ProtocolType.Shake, ""))));
             }
         }
 

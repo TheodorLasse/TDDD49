@@ -1,21 +1,20 @@
 ﻿using ChatApp.Model;
 using ChatApp.View;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Windows.Data;
+using System.Windows;
 
 namespace ChatApp.ViewModel
 {
     public partial class ConnectPageViewModel : INotifyPropertyChanged
     {
-        private ProtocolManager protocolManager;
+        private readonly ProtocolManager protocolManager;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private ChatHistory chatHistory;
+        private readonly ChatHistory chatHistory;
 
         public ObservableCollection<string> ChatHistoryStrings { get; set; } = new();
 
@@ -69,8 +68,13 @@ namespace ChatApp.ViewModel
                 if (e.Content is ConnectPageView)
                 {
                     UpdateHistoryList();
-        }
-            };  
+                }
+            };
+
+            protocolManager.MessageEvent += (message) =>
+            {
+                MessageBox.Show(message);
+            };
         }
 
         public async void ConnectServer(string ip, int port, string username)
@@ -107,7 +111,7 @@ namespace ChatApp.ViewModel
             try
             {
                 protocolManager.username = username;
-                string? otherUser = await protocolManager.StartServer(ip, port);
+                string? otherUser = await protocolManager.StartServer(ip, port, ConnectionRequestHandler);
                 if (otherUser != null)
                 {
                     ErrorMessage = "Connected as server!";
@@ -127,6 +131,15 @@ namespace ChatApp.ViewModel
             {
                 ErrorMessage = "Failed to start server!";
             }
+        }
+
+        private bool ConnectionRequestHandler(string username)
+        {
+            return MessageBox.Show(
+                $"{username} is trying to connect to you, do you accept?",
+                "Connection!",
+                MessageBoxButton.YesNo
+            ) == MessageBoxResult.Yes;
         }
 
         internal void ShowHistory(string chatId)
