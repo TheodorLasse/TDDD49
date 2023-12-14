@@ -9,7 +9,7 @@ namespace ChatApp.Model
     public class ChatHistory
     {
         public List<ChatSession> History;
-        private string fileName = "History.txt";
+        private readonly string fileName = "History.txt";
 
         public ChatHistory()
         {
@@ -44,7 +44,6 @@ namespace ChatApp.Model
 
         public void Save()
         {
-            //This will save some text to a file in the same folder as your project exe file
             try
             {
                 using (StreamWriter sw = File.CreateText(fileName))

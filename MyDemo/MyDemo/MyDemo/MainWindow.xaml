@@ -6,14 +6,14 @@
         xmlns:local="clr-namespace:ChatApp"
         xmlns:viewModel="clr-namespace:ChatApp.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid Background="Red">
+        Title="MainWindow" Height="600" Width="1000">
+    <Grid Background="#8cb9ec">
         <Frame NavigationUIVisibility="Hidden" x:Name="mainFrame"/>
     </Grid>
 
     <Window.Resources>
         <Storyboard x:Key="shakeKey" TargetProperty="Left">
-            <DoubleAnimation  From="400" To="600" Duration="0:0:0.5"
+            <DoubleAnimation  From="400" To="600" Duration="0:0:0.1"
                      AutoReverse="True" RepeatBehavior="10x"
                      FillBehavior="Stop"/>
         </Storyboard>

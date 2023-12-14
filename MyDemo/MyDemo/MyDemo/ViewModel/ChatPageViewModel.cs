@@ -1,21 +1,17 @@
 ﻿using ChatApp.Model;
 using ChatApp.ViewModel.Commands;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace ChatApp.ViewModel
 {
     public partial class ChatPageViewModel : INotifyPropertyChanged
     {
-        ProtocolManager protocolManager;
+        readonly ProtocolManager protocolManager;
 
         public ObservableCollection<string> Messages
         {
@@ -43,9 +39,11 @@ namespace ChatApp.ViewModel
         public ChatPageViewModel(ProtocolManager protocolManager, ChatSession chatSession)
         {
             this.protocolManager = protocolManager;
-            EnterCommand = new EnterCommand(enterKeyPressed);
-            this.ChatSession = chatSession;
+            EnterCommand = new EnterCommand(EnterKeyPressed);
+            ChatSession = chatSession;
             Task.Run(() => protocolManager.ReadMessages(ChatSession));
+
+            protocolManager.ShakeEvent += ShakeScreen;
         }
 
         protected void OnPropertyChanged([CallerMemberName] string name = null)
@@ -53,7 +51,7 @@ namespace ChatApp.ViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
 
-        private void enterKeyPressed()
+        private void EnterKeyPressed()
         {
             if (TextInput == string.Empty)
                 return;
@@ -68,9 +66,16 @@ namespace ChatApp.ViewModel
             protocolManager.CloseConnection();
         }
 
-        public void Shake()
+        public void SendShake()
         {
             protocolManager.SendShake();
+        }
+
+        public static void ShakeScreen()
+        {
+            var mainWindow = (MainWindow)Application.Current.MainWindow;
+            var storyboard = (Storyboard)mainWindow.FindResource("shakeKey");
+            storyboard.Begin(mainWindow);
         }
     }
 }

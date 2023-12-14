@@ -26,7 +26,7 @@ namespace ChatApp.View
 
         private void Shake_button_click(object sender, RoutedEventArgs e)
         {
-            viewModel.Shake();
+            viewModel.SendShake();
         }
     }
 }
